@@ -299,6 +299,48 @@ curl -X POST http://localhost:5000/api/solve \
 - PDA simulation limited to 100 moves
 - Grammar must be in standard BNF notation
 
+## 🚀 Deployment
+
+### Quick Deploy to Render.com (FREE)
+
+Your app is deployment-ready! Follow these steps:
+
+1. **Push to GitHub:**
+   ```bash
+   git add .
+   git commit -m "Ready for deployment"
+   git push origin main
+   ```
+
+2. **Deploy on Render.com:**
+   - Go to [render.com](https://render.com) and sign up (FREE)
+   - Click "New +" → "Web Service"
+   - Connect your GitHub repository
+   - Configure:
+     - **Build Command**: `pip install -r requirements.txt`
+     - **Start Command**: `gunicorn app:app`
+     - **Instance Type**: Free
+   - Click "Create Web Service"
+   - Wait 5-10 minutes for deployment
+
+3. **Done!** Your app will be live at `https://automata-solver.onrender.com`
+
+### Alternative Options:
+- **Railway.app**: Auto-detects Flask, one-click deploy
+- **Vercel**: Serverless deployment with CLI
+- See `QUICK_DEPLOY.md` for detailed guides
+
+### Why Not Netlify?
+Netlify only hosts static sites (HTML/CSS/JS). Your Automata Solver uses Flask (Python backend), so it needs Render.com or similar platforms that support Python.
+
+### Deployment Files Included:
+- ✅ `requirements.txt` - Python dependencies
+- ✅ `Procfile` - Process configuration
+- ✅ `render.yaml` - Render configuration
+- ✅ `vercel.json` - Vercel configuration
+- ✅ `QUICK_DEPLOY.md` - Step-by-step guide
+- ✅ `DEPLOY_GUIDE.md` - Comprehensive guide
+
 ## Future Enhancements
 
 - Interactive automaton editor

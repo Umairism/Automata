@@ -3,6 +3,7 @@ Automata Solver Web Application
 Main Flask Application
 """
 from flask import Flask, request, jsonify, render_template, send_file
+from flask_cors import CORS
 from engine.classifier import classify_query
 from engine.parser import parse_input
 from engine.cfg_engine import CFGEngine
@@ -17,7 +18,8 @@ import os
 import uuid
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'your-secret-key-here'
+CORS(app)  # Enable CORS for all routes
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'your-secret-key-here')
 app.config['STATIC_FOLDER'] = 'static'
 
 # Ensure static directory exists
@@ -129,4 +131,9 @@ def status():
     })
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    # Use PORT environment variable for deployment platforms
+    # Railway uses 8080 by default, local dev uses 5000
+    port = int(os.environ.get('PORT', 8080))
+    # Disable debug in production
+    debug_mode = os.environ.get('FLASK_ENV', 'development') == 'development'
+    app.run(debug=debug_mode, host='0.0.0.0', port=port)
