@@ -1,0 +1,1123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automata Solver - Theory of Computation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: rgba(255, 255, 255, 0.98);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 15px 0;
+        }
+
+        .nav-brand h1 {
+            font-size: 1.5em;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 5px;
+        }
+
+        .nav-item {
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: all 0.3s;
+            font-weight: 500;
+            color: #555;
+        }
+
+        .nav-item:hover {
+            background: #f0f0f0;
+            color: #667eea;
+        }
+
+        .nav-item.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+
+        /* Landing Page */
+        .landing-page {
+            display: block;
+        }
+
+        .hero {
+            background: white;
+            border-radius: 15px;
+            padding: 60px 40px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .hero h1 {
+            font-size: 3em;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+        }
+
+        .hero p {
+            font-size: 1.3em;
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.2);
+        }
+
+        .feature-card .icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+
+        .feature-card h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 1.3em;
+        }
+
+        .feature-card p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        /* Section */
+        .section {
+            display: none;
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .section-header {
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+        }
+
+        .section-header h2 {
+            color: #333;
+            font-size: 2em;
+        }
+
+        .section-header p {
+            color: #666;
+            margin-top: 10px;
+        }
+
+        /* Input Section */
+        .input-section {
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+
+        textarea, input[type="text"], select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: 'Courier New', monospace;
+            resize: vertical;
+            transition: all 0.3s;
+        }
+
+        textarea:focus, input[type="text"]:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        textarea {
+            min-height: 120px;
+        }
+
+        /* Button Group */
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 12px 30px;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            flex: 1;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+
+        /* Examples */
+        .examples {
+            margin-top: 25px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .examples h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+
+        .example-item {
+            padding: 12px 15px;
+            margin: 8px 0;
+            background: white;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-left: 3px solid transparent;
+        }
+
+        .example-item:hover {
+            background: #e8eaf6;
+            border-left-color: #667eea;
+            transform: translateX(5px);
+        }
+
+        /* Loading */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Result Section */
+        .result-section {
+            display: none;
+            margin-top: 30px;
+            padding: 25px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #28a745;
+        }
+
+        .result-section h2 {
+            color: #28a745;
+            margin-bottom: 20px;
+        }
+
+        .error {
+            background: #fff5f5;
+            border-left-color: #dc3545;
+        }
+
+        .error h2 {
+            color: #dc3545;
+        }
+
+        .explanation {
+            margin: 15px 0;
+            line-height: 1.8;
+            color: #333;
+        }
+
+        .diagram {
+            margin: 25px 0;
+            text-align: center;
+        }
+
+        .diagram img {
+            max-width: 100%;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px;
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .diagram h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        table th, table td {
+            padding: 14px;
+            text-align: left;
+            border: 1px solid #e0e0e0;
+        }
+
+        table th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: 600;
+        }
+
+        table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        table tr:hover {
+            background: #e8eaf6;
+        }
+
+        /* Steps */
+        .steps {
+            margin: 20px 0;
+        }
+
+        .steps h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .step-item {
+            padding: 12px 15px;
+            margin: 10px 0;
+            background: white;
+            border-radius: 5px;
+            border-left: 4px solid #667eea;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 30px 20px;
+            color: white;
+            margin-top: 40px;
+        }
+
+        footer p {
+            opacity: 0.9;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-menu {
+                flex-wrap: wrap;
+                gap: 5px;
+            }
+
+            .nav-item {
+                padding: 8px 15px;
+                font-size: 0.9em;
+            }
+
+            .hero h1 {
+                font-size: 2em;
+            }
+
+            .hero p {
+                font-size: 1.1em;
+            }
+
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .section {
+                padding: 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <span style="font-size: 1.5em;">🤖</span>
+                <h1>Automata Solver</h1>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item active" onclick="showSection('home')">Home</li>
+                <li class="nav-item" onclick="showSection('general')">General Solver</li>
+                <li class="nav-item" onclick="showSection('dfa')">DFA</li>
+                <li class="nav-item" onclick="showSection('nfa')">NFA</li>
+                <li class="nav-item" onclick="showSection('pda')">PDA</li>
+                <li class="nav-item" onclick="showSection('cfg')">CFG</li>
+                <li class="nav-item" onclick="showSection('tm')">Turing Machine</li>
+                <li class="nav-item" onclick="showSection('theory')">Theory</li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Container -->
+    <div class="container">
+        <!-- Landing Page -->
+        <div id="home" class="landing-page">
+            <div class="hero">
+                <h1>🤖 Automata Solver</h1>
+                <p>Your comprehensive solution for Theory of Computation problems</p>
+            </div>
+
+            <div class="feature-grid">
+                <div class="feature-card" onclick="showSection('dfa')">
+                    <div class="icon">📊</div>
+                    <h3>DFA (Deterministic Finite Automaton)</h3>
+                    <p>Construct and analyze DFAs for regular languages. Minimize states, check string acceptance, and visualize state transitions.</p>
+                </div>
+
+                <div class="feature-card" onclick="showSection('nfa')">
+                    <div class="icon">🔀</div>
+                    <h3>NFA (Non-deterministic Finite Automaton)</h3>
+                    <p>Work with NFAs and convert them to DFAs. Handle epsilon transitions and non-deterministic state transitions.</p>
+                </div>
+
+                <div class="feature-card" onclick="showSection('pda')">
+                    <div class="icon">📚</div>
+                    <h3>PDA (Pushdown Automaton)</h3>
+                    <p>Design PDAs for context-free languages. Handle stack operations and recognize languages like {aⁿbⁿ}.</p>
+                </div>
+
+                <div class="feature-card" onclick="showSection('cfg')">
+                    <div class="icon">🌳</div>
+                    <h3>CFG (Context-Free Grammar)</h3>
+                    <p>Analyze grammars, check ambiguity, generate parse trees, and perform derivations (leftmost/rightmost).</p>
+                </div>
+
+                <div class="feature-card" onclick="showSection('tm')">
+                    <div class="icon">⚙️</div>
+                    <h3>Turing Machine</h3>
+                    <p>Construct and simulate Turing Machines. Handle complex computations and language recognition.</p>
+                </div>
+
+                <div class="feature-card" onclick="showSection('theory')">
+                    <div class="icon">🎓</div>
+                    <h3>Theory & Proofs</h3>
+                    <p>Pumping lemmas, closure properties, Moore/Mealy machines, LBA, and theoretical concepts.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- General Solver Section -->
+        <div id="general" class="section">
+            <div class="section-header">
+                <h2>📝 General Solver</h2>
+                <p>Solve any Theory of Computation problem. The solver will automatically detect the type and provide the solution.</p>
+            </div>
+
+            <div class="input-section">
+                <div class="input-group">
+                    <label for="general-question">Enter your question:</label>
+                    <textarea id="general-question" placeholder="Example: Construct a DFA that accepts strings ending with '01'"></textarea>
+                </div>
+
+                <div class="input-group">
+                    <label for="general-grammar">Grammar (optional, for CFG/PDA problems):</label>
+                    <textarea id="general-grammar" placeholder="Example: E → E+E | E*E | (E) | id"></textarea>
+                </div>
+
+                <div class="button-group">
+                    <button class="btn-primary" onclick="solveQuestion('general')">Solve</button>
+                    <button class="btn-secondary" onclick="clearSection('general')">Clear</button>
+                </div>
+
+                <div class="examples">
+                    <h3>📚 Example Questions</h3>
+                    <div class="example-item" onclick="loadExample('general', 'dfa_example')">
+                        ✓ Construct a DFA for strings with even number of 'a's
+                    </div>
+                    <div class="example-item" onclick="loadExample('general', 'pda_example')">
+                        ✓ Design a PDA for the language {aⁿbⁿ | n ≥ 0}
+                    </div>
+                    <div class="example-item" onclick="loadExample('general', 'cfg_ambiguity')">
+                        ✓ Prove that the grammar E → E+E | E*E | id is ambiguous
+                    </div>
+                    <div class="example-item" onclick="loadExample('general', 'tm_example')">
+                        ✓ Construct a Turing Machine for {aⁿbⁿcⁿ | n ≥ 1}
+                    </div>
+                </div>
+            </div>
+
+            <div class="loading" id="general-loading">
+                <div class="spinner"></div>
+                <p>Processing your question...</p>
+            </div>
+
+            <div class="result-section" id="general-result"></div>
+        </div>
+
+        <!-- DFA Section -->
+        <div id="dfa" class="section">
+            <div class="section-header">
+                <h2>📊 DFA Solver</h2>
+                <p>Construct, analyze, and minimize Deterministic Finite Automatons</p>
+            </div>
+
+            <div class="input-section">
+                <div class="input-group">
+                    <label for="dfa-question">Describe your DFA requirement:</label>
+                    <textarea id="dfa-question" placeholder="Example: Construct a DFA that accepts strings ending with '01' over alphabet {0,1}"></textarea>
+                </div>
+
+                <div class="button-group">
+                    <button class="btn-primary" onclick="solveQuestion('dfa')">Construct DFA</button>
+                    <button class="btn-secondary" onclick="clearSection('dfa')">Clear</button>
+                </div>
+
+                <div class="examples">
+                    <h3>📚 DFA Examples</h3>
+                    <div class="example-item" onclick="loadExample('dfa', 'even_a')">
+                        ✓ DFA for strings with even number of 'a's
+                    </div>
+                    <div class="example-item" onclick="loadExample('dfa', 'ending_01')">
+                        ✓ DFA for strings ending with '01'
+                    </div>
+                    <div class="example-item" onclick="loadExample('dfa', 'divisible_3')">
+                        ✓ DFA for binary strings divisible by 3
+                    </div>
+                    <div class="example-item" onclick="loadExample('dfa', 'no_consecutive')">
+                        ✓ DFA that doesn't allow consecutive 'a's
+                    </div>
+                </div>
+            </div>
+
+            <div class="loading" id="dfa-loading">
+                <div class="spinner"></div>
+                <p>Constructing DFA...</p>
+            </div>
+
+            <div class="result-section" id="dfa-result"></div>
+        </div>
+
+        <!-- NFA Section -->
+        <div id="nfa" class="section">
+            <div class="section-header">
+                <h2>🔀 NFA Solver</h2>
+                <p>Work with Non-deterministic Finite Automatons and convert to DFA</p>
+            </div>
+
+            <div class="input-section">
+                <div class="input-group">
+                    <label for="nfa-question">Describe your NFA requirement:</label>
+                    <textarea id="nfa-question" placeholder="Example: Convert NFA to DFA or construct NFA for language containing '010'"></textarea>
+                </div>
+
+                <div class="button-group">
+                    <button class="btn-primary" onclick="solveQuestion('nfa')">Solve NFA</button>
+                    <button class="btn-secondary" onclick="clearSection('nfa')">Clear</button>
+                </div>
+
+                <div class="examples">
+                    <h3>📚 NFA Examples</h3>
+                    <div class="example-item" onclick="loadExample('nfa', 'contains_010')">
+                        ✓ NFA for strings containing '010'
+                    </div>
+                    <div class="example-item" onclick="loadExample('nfa', 'nfa_to_dfa')">
+                        ✓ Convert NFA to DFA
+                    </div>
+                    <div class="example-item" onclick="loadExample('nfa', 'epsilon_transitions')">
+                        ✓ NFA with epsilon transitions
+                    </div>
+                </div>
+            </div>
+
+            <div class="loading" id="nfa-loading">
+                <div class="spinner"></div>
+                <p>Processing NFA...</p>
+            </div>
+
+            <div class="result-section" id="nfa-result"></div>
+        </div>
+
+        <!-- PDA Section -->
+        <div id="pda" class="section">
+            <div class="section-header">
+                <h2>📚 PDA Solver</h2>
+                <p>Design Pushdown Automatons for context-free languages</p>
+            </div>
+
+            <div class="input-section">
+                <div class="input-group">
+                    <label for="pda-question">Describe your PDA requirement:</label>
+                    <textarea id="pda-question" placeholder="Example: Construct PDA for language {aⁿbⁿ | n ≥ 0}"></textarea>
+                </div>
+
+                <div class="input-group">
+                    <label for="pda-grammar">Grammar (optional, for CFG to PDA conversion):</label>
+                    <textarea id="pda-grammar" placeholder="Example: S → aSb | ε"></textarea>
+                </div>
+
+                <div class="button-group">
+                    <button class="btn-primary" onclick="solveQuestion('pda')">Construct PDA</button>
+                    <button class="btn-secondary" onclick="clearSection('pda')">Clear</button>
+                </div>
+
+                <div class="examples">
+                    <h3>📚 PDA Examples</h3>
+                    <div class="example-item" onclick="loadExample('pda', 'anbn')">
+                        ✓ PDA for {aⁿbⁿ | n ≥ 0}
+                    </div>
+                    <div class="example-item" onclick="loadExample('pda', 'palindrome')">
+                        ✓ PDA for palindromes over {a,b}
+                    </div>
+                    <div class="example-item" onclick="loadExample('pda', 'wcwr')">
+                        ✓ PDA for {wcwʳ | w ∈ {a,b}*}
+                    </div>
+                    <div class="example-item" onclick="loadExample('pda', 'unequal')">
+                        ✓ PDA for unequal number of a's and b's
+                    </div>
+                </div>
+            </div>
+
+            <div class="loading" id="pda-loading">
+                <div class="spinner"></div>
+                <p>Constructing PDA...</p>
+            </div>
+
+            <div class="result-section" id="pda-result"></div>
+        </div>
+
+        <!-- CFG Section -->
+        <div id="cfg" class="section">
+            <div class="section-header">
+                <h2>🌳 CFG Analyzer</h2>
+                <p>Analyze Context-Free Grammars, check ambiguity, and generate parse trees</p>
+            </div>
+
+            <div class="input-section">
+                <div class="input-group">
+                    <label for="cfg-question">What do you want to do?</label>
+                    <textarea id="cfg-question" placeholder="Example: Prove that the given grammar is ambiguous"></textarea>
+                </div>
+
+                <div class="input-group">
+                    <label for="cfg-grammar">Grammar:</label>
+                    <textarea id="cfg-grammar" placeholder="Example:
+E → E+E | E*E | (E) | id
+S → aSb | ab"></textarea>
+                </div>
+
+                <div class="button-group">
+                    <button class="btn-primary" onclick="solveQuestion('cfg')">Analyze Grammar</button>
+                    <button class="btn-secondary" onclick="clearSection('cfg')">Clear</button>
+                </div>
+
+                <div class="examples">
+                    <h3>📚 CFG Examples</h3>
+                    <div class="example-item" onclick="loadExample('cfg', 'ambiguity')">
+                        ✓ Check if grammar is ambiguous
+                    </div>
+                    <div class="example-item" onclick="loadExample('cfg', 'leftmost')">
+                        ✓ Show leftmost derivation for "id+id*id"
+                    </div>
+                    <div class="example-item" onclick="loadExample('cfg', 'rightmost')">
+                        ✓ Show rightmost derivation
+                    </div>
+                    <div class="example-item" onclick="loadExample('cfg', 'parse_tree')">
+                        ✓ Generate parse tree
+                    </div>
+                    <div class="example-item" onclick="loadExample('cfg', 'construct')">
+                        ✓ Construct CFG for {aⁿbⁿ | n ≥ 0}
+                    </div>
+                </div>
+            </div>
+
+            <div class="loading" id="cfg-loading">
+                <div class="spinner"></div>
+                <p>Analyzing grammar...</p>
+            </div>
+
+            <div class="result-section" id="cfg-result"></div>
+        </div>
+
+        <!-- Turing Machine Section -->
+        <div id="tm" class="section">
+            <div class="section-header">
+                <h2>⚙️ Turing Machine Solver</h2>
+                <p>Construct and simulate Turing Machines for complex computations</p>
+            </div>
+
+            <div class="input-section">
+                <div class="input-group">
+                    <label for="tm-question">Describe your Turing Machine requirement:</label>
+                    <textarea id="tm-question" placeholder="Example: Construct TM for language {aⁿbⁿcⁿ | n ≥ 1}"></textarea>
+                </div>
+
+                <div class="button-group">
+                    <button class="btn-primary" onclick="solveQuestion('tm')">Construct TM</button>
+                    <button class="btn-secondary" onclick="clearSection('tm')">Clear</button>
+                </div>
+
+                <div class="examples">
+                    <h3>📚 Turing Machine Examples</h3>
+                    <div class="example-item" onclick="loadExample('tm', 'anbncn')">
+                        ✓ TM for {aⁿbⁿcⁿ | n ≥ 1}
+                    </div>
+                    <div class="example-item" onclick="loadExample('tm', 'palindrome')">
+                        ✓ TM for checking palindromes
+                    </div>
+                    <div class="example-item" onclick="loadExample('tm', 'addition')">
+                        ✓ TM for binary addition
+                    </div>
+                    <div class="example-item" onclick="loadExample('tm', 'anbn')">
+                        ✓ TM for {aⁿbⁿ | n ≥ 0}
+                    </div>
+                </div>
+            </div>
+
+            <div class="loading" id="tm-loading">
+                <div class="spinner"></div>
+                <p>Constructing Turing Machine...</p>
+            </div>
+
+            <div class="result-section" id="tm-result"></div>
+        </div>
+
+        <!-- Theory Section -->
+        <div id="theory" class="section">
+            <div class="section-header">
+                <h2>🎓 Theory & Proofs</h2>
+                <p>Pumping lemmas, closure properties, Moore/Mealy machines, and theoretical concepts</p>
+            </div>
+
+            <div class="input-section">
+                <div class="input-group">
+                    <label for="theory-question">What theoretical concept do you need help with?</label>
+                    <textarea id="theory-question" placeholder="Example: Prove using pumping lemma that {aⁿbⁿ | n ≥ 0} is not regular"></textarea>
+                </div>
+
+                <div class="input-group">
+                    <label for="theory-grammar">Grammar (optional):</label>
+                    <textarea id="theory-grammar" placeholder="Grammar if needed for the proof"></textarea>
+                </div>
+
+                <div class="button-group">
+                    <button class="btn-primary" onclick="solveQuestion('theory')">Solve</button>
+                    <button class="btn-secondary" onclick="clearSection('theory')">Clear</button>
+                </div>
+
+                <div class="examples">
+                    <h3>📚 Theory Examples</h3>
+                    <div class="example-item" onclick="loadExample('theory', 'pumping_regular')">
+                        ✓ Pumping Lemma for Regular Languages
+                    </div>
+                    <div class="example-item" onclick="loadExample('theory', 'pumping_cfl')">
+                        ✓ Pumping Lemma for Context-Free Languages
+                    </div>
+                    <div class="example-item" onclick="loadExample('theory', 'closure_regular')">
+                        ✓ Closure Properties of Regular Languages
+                    </div>
+                    <div class="example-item" onclick="loadExample('theory', 'moore_mealy')">
+                        ✓ Moore and Mealy Machines
+                    </div>
+                    <div class="example-item" onclick="loadExample('theory', 'lba')">
+                        ✓ Linear Bounded Automata
+                    </div>
+                </div>
+            </div>
+
+            <div class="loading" id="theory-loading">
+                <div class="spinner"></div>
+                <p>Processing...</p>
+            </div>
+
+            <div class="result-section" id="theory-result"></div>
+        </div>
+    </div>
+
+    <footer>
+        <p>🤖 Automata Solver v2.0 | Comprehensive Theory of Computation Helper</p>
+        <p>Supporting DFA, NFA, PDA, CFG, Turing Machines, Moore/Mealy, Pumping Lemmas & More</p>
+    </footer>
+
+    <script>
+        // Example data
+        const examples = {
+            dfa_example: {
+                question: "Construct a DFA that accepts strings with even number of a's over alphabet {a, b}",
+                grammar: ""
+            },
+            even_a: {
+                question: "Construct a DFA that accepts strings with even number of 'a's",
+                grammar: ""
+            },
+            ending_01: {
+                question: "Design a DFA that accepts strings ending with '01'",
+                grammar: ""
+            },
+            divisible_3: {
+                question: "Construct a DFA for binary strings divisible by 3",
+                grammar: ""
+            },
+            no_consecutive: {
+                question: "Construct a DFA that doesn't allow consecutive 'a's",
+                grammar: ""
+            },
+            contains_010: {
+                question: "Construct an NFA for strings containing '010'",
+                grammar: ""
+            },
+            nfa_to_dfa: {
+                question: "Convert NFA to DFA",
+                grammar: ""
+            },
+            epsilon_transitions: {
+                question: "Construct NFA with epsilon transitions for (a|b)*abb",
+                grammar: ""
+            },
+            pda_example: {
+                question: "Construct a PDA for the language {aⁿbⁿ | n ≥ 0}",
+                grammar: ""
+            },
+            anbn: {
+                question: "Construct PDA for {aⁿbⁿ | n ≥ 0}",
+                grammar: ""
+            },
+            palindrome: {
+                question: "Design PDA for palindromes over {a,b}",
+                grammar: ""
+            },
+            wcwr: {
+                question: "Construct PDA for {wcwʳ | w ∈ {a,b}*}",
+                grammar: ""
+            },
+            unequal: {
+                question: "Design PDA for unequal number of a's and b's",
+                grammar: ""
+            },
+            cfg_ambiguity: {
+                question: "Prove that the given grammar is ambiguous",
+                grammar: "E → E+E | E*E | (E) | id"
+            },
+            ambiguity: {
+                question: "Check if the given grammar is ambiguous",
+                grammar: "E → E+E | E*E | (E) | id"
+            },
+            leftmost: {
+                question: "Show leftmost derivation for string 'id+id*id'",
+                grammar: "E → E+E | E*E | (E) | id"
+            },
+            rightmost: {
+                question: "Show rightmost derivation for string 'id+id*id'",
+                grammar: "E → E+E | E*E | (E) | id"
+            },
+            parse_tree: {
+                question: "Generate parse tree for string 'id+id*id'",
+                grammar: "E → E+E | E*E | (E) | id"
+            },
+            construct: {
+                question: "Construct CFG for {aⁿbⁿ | n ≥ 0}",
+                grammar: ""
+            },
+            tm_example: {
+                question: "Construct a Turing Machine for {aⁿbⁿcⁿ | n ≥ 1}",
+                grammar: ""
+            },
+            anbncn: {
+                question: "Construct TM for {aⁿbⁿcⁿ | n ≥ 1}",
+                grammar: ""
+            },
+            addition: {
+                question: "Design a Turing Machine for binary addition",
+                grammar: ""
+            },
+            pumping_regular: {
+                question: "Prove using pumping lemma that {aⁿbⁿ | n ≥ 0} is not regular",
+                grammar: ""
+            },
+            pumping_cfl: {
+                question: "Use pumping lemma for CFLs to prove {aⁿbⁿcⁿ | n ≥ 0} is not context-free",
+                grammar: ""
+            },
+            closure_regular: {
+                question: "Explain closure properties of regular languages",
+                grammar: ""
+            },
+            moore_mealy: {
+                question: "Construct Moore machine for binary divisibility by 3",
+                grammar: ""
+            },
+            lba: {
+                question: "Construct LBA for {aⁿbⁿcⁿ | n ≥ 1}",
+                grammar: ""
+            }
+        };
+
+        // Show section function
+        function showSection(sectionId) {
+            // Hide all sections and landing page
+            document.getElementById('home').style.display = 'none';
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+
+            // Update navbar
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            // Show selected section
+            if (sectionId === 'home') {
+                document.getElementById('home').style.display = 'block';
+            } else {
+                document.getElementById(sectionId).classList.add('active');
+            }
+        }
+
+        // Load example function
+        function loadExample(section, exampleKey) {
+            const example = examples[exampleKey];
+            if (example) {
+                document.getElementById(`${section}-question`).value = example.question;
+                const grammarField = document.getElementById(`${section}-grammar`);
+                if (grammarField) {
+                    grammarField.value = example.grammar;
+                }
+            }
+        }
+
+        // Clear section function
+        function clearSection(section) {
+            document.getElementById(`${section}-question`).value = '';
+            const grammarField = document.getElementById(`${section}-grammar`);
+            if (grammarField) {
+                grammarField.value = '';
+            }
+            document.getElementById(`${section}-result`).style.display = 'none';
+        }
+
+        // Solve question function
+        async function solveQuestion(section) {
+            const question = document.getElementById(`${section}-question`).value;
+            const grammarField = document.getElementById(`${section}-grammar`);
+            const grammar = grammarField ? grammarField.value : '';
+
+            if (!question.trim()) {
+                alert('Please enter a question');
+                return;
+            }
+
+            // Show loading
+            document.getElementById(`${section}-loading`).style.display = 'block';
+            document.getElementById(`${section}-result`).style.display = 'none';
+
+            try {
+                const response = await fetch('/api/solve', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        question: question,
+                        grammar: grammar
+                    })
+                });
+
+                const data = await response.json();
+
+                // Hide loading
+                document.getElementById(`${section}-loading`).style.display = 'none';
+
+                // Display result
+                displayResult(section, data);
+
+            } catch (error) {
+                document.getElementById(`${section}-loading`).style.display = 'none';
+                displayError(section, 'Error communicating with server: ' + error.message);
+            }
+        }
+
+        // Display result function
+        function displayResult(section, data) {
+            const resultDiv = document.getElementById(`${section}-result`);
+            resultDiv.className = 'result-section';
+
+            if (data.error) {
+                displayError(section, data.error);
+                return;
+            }
+
+            let html = '<h2>✓ Solution</h2>';
+
+            // Explanation
+            if (data.explanation) {
+                html += `<div class="explanation">${data.explanation}</div>`;
+            }
+
+            // Steps
+            if (data.steps && data.steps.length > 0) {
+                html += '<div class="steps"><h3>Steps:</h3>';
+                data.steps.forEach(step => {
+                    html += `<div class="step-item">${step}</div>`;
+                });
+                html += '</div>';
+            }
+
+            // Tables
+            if (data.tables && data.tables.length > 0) {
+                data.tables.forEach(table => {
+                    html += `<h3>${table.title}</h3>`;
+                    html += '<table>';
+                    table.data.forEach((row, index) => {
+                        html += '<tr>';
+                        row.forEach(cell => {
+                            const tag = index === 0 ? 'th' : 'td';
+                            html += `<${tag}>${cell}</${tag}>`;
+                        });
+                        html += '</tr>';
+                    });
+                    html += '</table>';
+                });
+            }
+
+            // Diagrams
+            if (data.diagrams && data.diagrams.length > 0) {
+                data.diagrams.forEach(diagram => {
+                    html += `<div class="diagram">
+                        <h3>${diagram.title}</h3>
+                        <img src="/api/diagram/${diagram.filename}" alt="${diagram.title}">
+                    </div>`;
+                });
+            }
+
+            // Additional details
+            if (data.details) {
+                if (data.details.is_ambiguous !== undefined) {
+                    html += `<div class="explanation"><strong>Ambiguous:</strong> ${data.details.is_ambiguous ? 'Yes' : 'No'}</div>`;
+                    if (data.details.ambiguous_string) {
+                        html += `<div class="explanation"><strong>Ambiguous String:</strong> "${data.details.ambiguous_string}"</div>`;
+                    }
+                }
+            }
+
+            resultDiv.innerHTML = html;
+            resultDiv.style.display = 'block';
+        }
+
+        // Display error function
+        function displayError(section, message) {
+            const resultDiv = document.getElementById(`${section}-result`);
+            resultDiv.className = 'result-section error';
+            resultDiv.innerHTML = `<h2>⚠ Error</h2><div class="explanation">${message}</div>`;
+            resultDiv.style.display = 'block';
+        }
+    </script>
+</body>
+</html>

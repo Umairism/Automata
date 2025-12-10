@@ -1,0 +1,3 @@
+"""
+Diagram package initialization
+"""
