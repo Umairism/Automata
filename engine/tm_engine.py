@@ -26,34 +26,75 @@ class TMEngine:
     
     def construct_tm(self, parsed_input):
         """Construct a Turing Machine from language description"""
-        question = parsed_input.get('question', '')
+        question = parsed_input.get('question', '').lower()
         constraints = parsed_input.get('constraints', {})
         
-        # Example: TM for a^n b^n c^n
-        tm = {
-            'states': ['q0', 'q1', 'q2', 'q3', 'q_accept', 'q_reject'],
-            'input_alphabet': ['a', 'b', 'c'],
-            'tape_alphabet': ['a', 'b', 'c', 'X', 'Y', 'Z', 'B'],
-            'start_state': 'q0',
-            'accept_state': 'q_accept',
-            'reject_state': 'q_reject',
-            'blank_symbol': 'B',
-            'transitions': [
-                {'from': 'q0', 'read': 'a', 'to': 'q1', 'write': 'X', 'move': 'R'},
-                {'from': 'q1', 'read': 'a', 'to': 'q1', 'write': 'a', 'move': 'R'},
-                {'from': 'q1', 'read': 'b', 'to': 'q2', 'write': 'Y', 'move': 'R'},
-                {'from': 'q2', 'read': 'b', 'to': 'q2', 'write': 'b', 'move': 'R'},
-                {'from': 'q2', 'read': 'c', 'to': 'q3', 'write': 'Z', 'move': 'L'},
-                {'from': 'q3', 'read': 'b', 'to': 'q3', 'write': 'b', 'move': 'L'},
-                {'from': 'q3', 'read': 'a', 'to': 'q3', 'write': 'a', 'move': 'L'},
-                {'from': 'q3', 'read': 'X', 'to': 'q0', 'write': 'X', 'move': 'R'},
-                {'from': 'q0', 'read': 'Y', 'to': 'q_accept', 'write': 'Y', 'move': 'R'}
-            ]
-        }
+        # Detect pattern: a^n b^2n
+        if 'b2n' in question or 'b^2n' in question or ('anb' in question and '2n' in question):
+            tm = {
+                'states': ['q0', 'q1', 'q2', 'q3', 'q4', 'q_accept', 'q_reject'],
+                'input_alphabet': ['a', 'b'],
+                'tape_alphabet': ['a', 'b', 'X', 'Y', 'B'],
+                'start_state': 'q0',
+                'accept_state': 'q_accept',
+                'reject_state': 'q_reject',
+                'blank_symbol': 'B',
+                'transitions': [
+                    # Mark first 'a' with 'X' and move right
+                    {'from': 'q0', 'read': 'a', 'to': 'q1', 'write': 'X', 'move': 'R'},
+                    
+                    # State q1: Scan right past unmarked 'a's and marked 'Y's (skip loop)
+                    {'from': 'q1', 'read': 'a', 'to': 'q1', 'write': 'a', 'move': 'R'},
+                    {'from': 'q1', 'read': 'Y', 'to': 'q1', 'write': 'Y', 'move': 'R'},  # SKIP LOOP
+                    {'from': 'q1', 'read': 'b', 'to': 'q2', 'write': 'Y', 'move': 'R'},
+                    
+                    # State q2: Find and mark second 'b' with 'Y'
+                    {'from': 'q2', 'read': 'b', 'to': 'q3', 'write': 'Y', 'move': 'L'},
+                    
+                    # State q3: Rewind to the leftmost 'X', passing over marked symbols
+                    {'from': 'q3', 'read': 'Y', 'to': 'q3', 'write': 'Y', 'move': 'L'},  # SKIP LOOP
+                    {'from': 'q3', 'read': 'a', 'to': 'q3', 'write': 'a', 'move': 'L'},
+                    {'from': 'q3', 'read': 'X', 'to': 'q0', 'write': 'X', 'move': 'R'},
+                    
+                    # All 'a's processed, check if all 'b's are marked
+                    {'from': 'q0', 'read': 'Y', 'to': 'q4', 'write': 'Y', 'move': 'R'},
+                    {'from': 'q4', 'read': 'Y', 'to': 'q4', 'write': 'Y', 'move': 'R'},
+                    {'from': 'q4', 'read': 'B', 'to': 'q_accept', 'write': 'B', 'move': 'R'}
+                ]
+            }
+            explanation = 'Turing Machine for L={aⁿb²ⁿ|n≥1}. The TM marks each "a" with X, then marks two "b"s with Y for each X, and rewinds to repeat until all symbols are marked.'
+        
+        # Default: TM for a^n b^n c^n
+        else:
+            tm = {
+                'states': ['q0', 'q1', 'q2', 'q3', 'q_accept', 'q_reject'],
+                'input_alphabet': ['a', 'b', 'c'],
+                'tape_alphabet': ['a', 'b', 'c', 'X', 'Y', 'Z', 'B'],
+                'start_state': 'q0',
+                'accept_state': 'q_accept',
+                'reject_state': 'q_reject',
+                'blank_symbol': 'B',
+                'transitions': [
+                    {'from': 'q0', 'read': 'a', 'to': 'q1', 'write': 'X', 'move': 'R'},
+                    {'from': 'q1', 'read': 'a', 'to': 'q1', 'write': 'a', 'move': 'R'},
+                    {'from': 'q1', 'read': 'Y', 'to': 'q1', 'write': 'Y', 'move': 'R'},  # SKIP LOOP
+                    {'from': 'q1', 'read': 'b', 'to': 'q2', 'write': 'Y', 'move': 'R'},
+                    {'from': 'q2', 'read': 'b', 'to': 'q2', 'write': 'b', 'move': 'R'},
+                    {'from': 'q2', 'read': 'Z', 'to': 'q2', 'write': 'Z', 'move': 'R'},  # SKIP LOOP
+                    {'from': 'q2', 'read': 'c', 'to': 'q3', 'write': 'Z', 'move': 'L'},
+                    {'from': 'q3', 'read': 'Z', 'to': 'q3', 'write': 'Z', 'move': 'L'},  # SKIP LOOP
+                    {'from': 'q3', 'read': 'Y', 'to': 'q3', 'write': 'Y', 'move': 'L'},  # SKIP LOOP
+                    {'from': 'q3', 'read': 'b', 'to': 'q3', 'write': 'b', 'move': 'L'},
+                    {'from': 'q3', 'read': 'a', 'to': 'q3', 'write': 'a', 'move': 'L'},
+                    {'from': 'q3', 'read': 'X', 'to': 'q0', 'write': 'X', 'move': 'R'},
+                    {'from': 'q0', 'read': 'Y', 'to': 'q_accept', 'write': 'Y', 'move': 'R'}
+                ]
+            }
+            explanation = 'Turing Machine for L={aⁿbⁿcⁿ|n≥1}. The TM marks one a, one b, and one c in each pass, then rewinds to repeat until all symbols are marked.'
         
         return {
             'tm': tm,
-            'explanation': 'Turing Machine constructed for the given language specification.',
+            'explanation': explanation,
             'move_table': self._generate_move_table(tm),
             'diagram_filename': 'tm_construction.png'
         }

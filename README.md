@@ -97,7 +97,8 @@ Download and install from [graphviz.org](https://graphviz.org/download/)
 
 1. Clone the repository:
 ```bash
-cd /home/umairism/Desktop/Github/Automata
+git clone https://github.com/Umairism/Automata.git
+cd Automata
 ```
 
 2. Create a virtual environment:

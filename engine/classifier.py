@@ -161,6 +161,14 @@ def classify_query(question, grammar="", automaton=None):
             'constraints': extract_language_constraints(question)
         }
     
+    # NFA construction patterns
+    if any(keyword in question_lower for keyword in ['construct nfa', 'construct an nfa', 'build nfa', 'build an nfa', 'create nfa', 'design nfa', 'nfa for', 'nfa that', 'nfa with']):
+        return {
+            'task_type': 'nfa_construction',
+            'question': question,
+            'constraints': extract_language_constraints(question)
+        }
+    
     if any(keyword in question_lower for keyword in ['nfa to dfa', 'convert nfa', 'determinize']):
         return {
             'task_type': 'nfa_to_dfa',
@@ -219,7 +227,7 @@ def classify_query(question, grammar="", automaton=None):
             }
     
     # Turing Machine patterns
-    if any(keyword in question_lower for keyword in ['turing machine', 'tm construction', 'build tm']):
+    if any(keyword in question_lower for keyword in ['turing machine', 'tm construction', 'build tm', 'construct tm', 'design tm', 'tm for']):
         return {
             'task_type': 'tm_construction',
             'question': question,

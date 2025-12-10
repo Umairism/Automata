@@ -48,7 +48,9 @@ def is_accepting_state(state, accept_states):
 def format_state_name(states):
     """Format a set of states as a string"""
     if isinstance(states, set):
-        return '{' + ','.join(sorted(states)) + '}'
+        # Filter out None values and convert to strings
+        valid_states = [str(s) for s in states if s is not None]
+        return '{' + ','.join(sorted(valid_states)) + '}'
     return str(states)
 
 def validate_grammar(grammar):

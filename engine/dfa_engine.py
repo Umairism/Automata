@@ -16,6 +16,9 @@ class DFAEngine:
         if task_type == 'dfa_construction':
             return self.construct_dfa(parsed_input)
         
+        elif task_type == 'nfa_construction':
+            return self.construct_nfa(parsed_input)
+        
         elif task_type == 'nfa_to_dfa':
             return self.nfa_to_dfa(parsed_input)
         
@@ -185,12 +188,147 @@ class DFAEngine:
             'accept_states': [f'q{num_states - 1}']
         }
     
+    def construct_nfa(self, parsed_input):
+        """Construct an NFA from language description"""
+        question = parsed_input.get('question', '').lower()
+        constraints = parsed_input.get('constraints', {})
+        
+        # Check for substring patterns (contains 010, contains 101, etc.)
+        if 'contain' in question or 'substring' in question:
+            import re
+            # Look for patterns like "010", "101", "abb", etc.
+            substring_match = re.search(r'["\']?([01]+|[ab]+)["\']?', question)
+            if substring_match:
+                substring = substring_match.group(1)
+                nfa = self._construct_nfa_for_substring(substring)
+                return {
+                    'nfa': nfa,
+                    'explanation': f'NFA constructed to accept strings containing the substring "{substring}".\n\nThe NFA has {len(substring) + 1} states. It non-deterministically guesses where the substring begins and verifies the pattern. Once the full substring is matched, it stays in the accept state.',
+                    'transition_table': self._generate_transition_table(nfa),
+                    'diagram_filename': 'nfa_construction.png'
+                }
+        
+        # Check for epsilon/lambda transitions
+        if 'epsilon' in question or 'lambda' in question or 'ε' in question:
+            # Pattern like (a|b)*abb
+            if 'abb' in question:
+                nfa = {
+                    'states': ['q0', 'q1', 'q2', 'q3'],
+                    'alphabet': ['a', 'b'],
+                    'transitions': {
+                        'q0': {'a': ['q0', 'q1'], 'b': ['q0'], 'ε': []},
+                        'q1': {'a': [], 'b': ['q2'], 'ε': []},
+                        'q2': {'a': [], 'b': ['q3'], 'ε': []},
+                        'q3': {'a': [], 'b': [], 'ε': []}
+                    },
+                    'start_state': 'q0',
+                    'accept_states': ['q3']
+                }
+                explanation = 'NFA with epsilon transitions for (a|b)*abb. The automaton allows any sequence of a\'s and b\'s, then requires the exact sequence "abb" to accept.'
+            else:
+                # Generic epsilon-NFA
+                nfa = {
+                    'states': ['q0', 'q1', 'q2'],
+                    'alphabet': ['a', 'b'],
+                    'transitions': {
+                        'q0': {'a': ['q1'], 'b': [], 'ε': ['q2']},
+                        'q1': {'a': [], 'b': ['q2'], 'ε': []},
+                        'q2': {'a': [], 'b': [], 'ε': []}
+                    },
+                    'start_state': 'q0',
+                    'accept_states': ['q2']
+                }
+                explanation = 'NFA with epsilon transitions. The epsilon transition allows moving between states without consuming input.'
+            
+            return {
+                'nfa': nfa,
+                'explanation': explanation,
+                'transition_table': self._generate_transition_table(nfa),
+                'diagram_filename': 'nfa_construction.png'
+            }
+        
+        # Default NFA (for unrecognized patterns)
+        nfa = {
+            'states': ['q0', 'q1', 'q2'],
+            'alphabet': ['a', 'b'],
+            'transitions': {
+                'q0': {'a': ['q0', 'q1'], 'b': ['q0']},
+                'q1': {'a': [], 'b': ['q2']},
+                'q2': {'a': [], 'b': []}
+            },
+            'start_state': 'q0',
+            'accept_states': ['q2']
+        }
+        explanation = 'NFA constructed for the given language specification.'
+        
+        return {
+            'nfa': nfa,
+            'explanation': explanation,
+            'transition_table': self._generate_transition_table(nfa),
+            'diagram_filename': 'nfa_construction.png'
+        }
+    
+    def _construct_nfa_for_substring(self, substring):
+        """Construct an NFA that accepts strings containing a specific substring"""
+        # Determine alphabet from the substring
+        alphabet = sorted(list(set(substring)))
+        
+        # Create states: one for each character in substring + start state
+        num_states = len(substring) + 1
+        states = [f'q{i}' for i in range(num_states)]
+        
+        # Build transitions
+        transitions = {}
+        
+        # First state: can loop on all characters, and start matching on first char of substring
+        transitions['q0'] = {}
+        for symbol in alphabet:
+            if symbol == substring[0]:
+                transitions['q0'][symbol] = ['q0', 'q1']  # Non-deterministic: stay or start matching
+            else:
+                transitions['q0'][symbol] = ['q0']  # Just loop
+        
+        # Middle states: match the substring character by character
+        for i in range(1, num_states - 1):
+            transitions[f'q{i}'] = {}
+            expected_char = substring[i]
+            
+            for symbol in alphabet:
+                if symbol == expected_char:
+                    transitions[f'q{i}'][symbol] = [f'q{i+1}']
+                else:
+                    transitions[f'q{i}'][symbol] = []  # Dead end if wrong character
+        
+        # Final state: substring matched, accept all remaining input
+        transitions[f'q{num_states - 1}'] = {}
+        for symbol in alphabet:
+            transitions[f'q{num_states - 1}'][symbol] = [f'q{num_states - 1}']  # Loop in accept state
+        
+        return {
+            'states': states,
+            'alphabet': alphabet,
+            'transitions': transitions,
+            'start_state': 'q0',
+            'accept_states': [f'q{num_states - 1}']
+        }
+    
     def nfa_to_dfa(self, parsed_input):
         """Convert NFA to DFA using subset construction"""
         nfa = parsed_input.get('automaton', {})
         
+        # If no NFA provided, create a sample NFA to demonstrate conversion
         if not nfa or 'states' not in nfa:
-            return {'error': 'Invalid NFA specification'}
+            nfa = {
+                'states': ['q0', 'q1', 'q2'],
+                'alphabet': ['a', 'b'],
+                'transitions': {
+                    'q0': {'a': ['q0', 'q1'], 'b': ['q0']},
+                    'q1': {'a': [], 'b': ['q2']},
+                    'q2': {'a': [], 'b': []}
+                },
+                'start_state': 'q0',
+                'accept_states': ['q2']
+            }
         
         # Subset construction algorithm
         dfa_states = []

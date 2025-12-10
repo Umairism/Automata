@@ -63,7 +63,7 @@ def solve():
             engine = CFGEngine()
             result = engine.solve(task_type, parsed_input)
             
-        elif task_type in ['dfa_construction', 'nfa_to_dfa', 'dfa_minimization', 're_to_nfa', 'dfa_membership']:
+        elif task_type in ['dfa_construction', 'nfa_construction', 'nfa_to_dfa', 'dfa_minimization', 're_to_nfa', 'dfa_membership']:
             engine = DFAEngine()
             result = engine.solve(task_type, parsed_input)
             

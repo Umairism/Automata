@@ -581,7 +581,7 @@
                 </div>
 
                 <div class="examples">
-                    <h3>📚 DFA Examples</h3>
+                    <h3>📚 DFA Examples <span style="color: #ff6b6b; font-size: 0.8em;">(Limited Patterns)</span></h3>
                     <div class="example-item" onclick="loadExample('dfa', 'even_a')">
                         ✓ DFA for strings with even number of 'a's
                     </div>
@@ -593,6 +593,15 @@
                     </div>
                     <div class="example-item" onclick="loadExample('dfa', 'no_consecutive')">
                         ✓ DFA that doesn't allow consecutive 'a's
+                    </div>
+                    <div style="padding: 10px; margin-top: 10px; background: #fff3cd; border-left: 4px solid #ffc107; border-radius: 4px; font-size: 0.85em;">
+                        <strong>🚧 Under Development:</strong>
+                        <ul style="margin: 5px 0 0 20px; line-height: 1.6;">
+                            <li>DFA minimization algorithms</li>
+                            <li>Custom pattern recognition (complex regex)</li>
+                            <li>DFA equivalence checking</li>
+                            <li>Interactive state diagram editing</li>
+                        </ul>
                     </div>
                 </div>
             </div>
@@ -624,7 +633,7 @@
                 </div>
 
                 <div class="examples">
-                    <h3>📚 NFA Examples</h3>
+                    <h3>📚 NFA Examples <span style="color: #ff6b6b; font-size: 0.8em;">(Basic Support)</span></h3>
                     <div class="example-item" onclick="loadExample('nfa', 'contains_010')">
                         ✓ NFA for strings containing '010'
                     </div>
@@ -633,6 +642,15 @@
                     </div>
                     <div class="example-item" onclick="loadExample('nfa', 'epsilon_transitions')">
                         ✓ NFA with epsilon transitions
+                    </div>
+                    <div style="padding: 10px; margin-top: 10px; background: #fff3cd; border-left: 4px solid #ffc107; border-radius: 4px; font-size: 0.85em;">
+                        <strong>🚧 Under Development:</strong>
+                        <ul style="margin: 5px 0 0 20px; line-height: 1.6;">
+                            <li>Complex substring patterns (multiple conditions)</li>
+                            <li>NFA minimization</li>
+                            <li>Regular expression to NFA conversion (advanced)</li>
+                            <li>NFA simulation with step-by-step execution</li>
+                        </ul>
                     </div>
                 </div>
             </div>
@@ -669,7 +687,7 @@
                 </div>
 
                 <div class="examples">
-                    <h3>📚 PDA Examples</h3>
+                    <h3>📚 PDA Examples <span style="color: #ff6b6b; font-size: 0.8em;">(Standard Patterns)</span></h3>
                     <div class="example-item" onclick="loadExample('pda', 'anbn')">
                         ✓ PDA for {aⁿbⁿ | n ≥ 0}
                     </div>
@@ -681,6 +699,15 @@
                     </div>
                     <div class="example-item" onclick="loadExample('pda', 'unequal')">
                         ✓ PDA for unequal number of a's and b's
+                    </div>
+                    <div style="padding: 10px; margin-top: 10px; background: #fff3cd; border-left: 4px solid #ffc107; border-radius: 4px; font-size: 0.85em;">
+                        <strong>🚧 Under Development:</strong>
+                        <ul style="margin: 5px 0 0 20px; line-height: 1.6;">
+                            <li>CFG to PDA conversion (full automation)</li>
+                            <li>PDA determinization checks</li>
+                            <li>Nested structures beyond standard patterns</li>
+                            <li>PDA membership testing with traces</li>
+                        </ul>
                     </div>
                 </div>
             </div>
@@ -719,7 +746,7 @@ S → aSb | ab"></textarea>
                 </div>
 
                 <div class="examples">
-                    <h3>📚 CFG Examples</h3>
+                    <h3>📚 CFG Examples <span style="color: #ff6b6b; font-size: 0.8em;">(Core Features)</span></h3>
                     <div class="example-item" onclick="loadExample('cfg', 'ambiguity')">
                         ✓ Check if grammar is ambiguous
                     </div>
@@ -734,6 +761,16 @@ S → aSb | ab"></textarea>
                     </div>
                     <div class="example-item" onclick="loadExample('cfg', 'construct')">
                         ✓ Construct CFG for {aⁿbⁿ | n ≥ 0}
+                    </div>
+                    <div style="padding: 10px; margin-top: 10px; background: #fff3cd; border-left: 4px solid #ffc107; border-radius: 4px; font-size: 0.85em;">
+                        <strong>🚧 Under Development:</strong>
+                        <ul style="margin: 5px 0 0 20px; line-height: 1.6;">
+                            <li>CNF (Chomsky Normal Form) conversion</li>
+                            <li>GNF (Greibach Normal Form) conversion</li>
+                            <li>Left recursion elimination</li>
+                            <li>First and Follow set computation</li>
+                            <li>LL(1) and LR parsing table generation</li>
+                        </ul>
                     </div>
                 </div>
             </div>
@@ -765,7 +802,7 @@ S → aSb | ab"></textarea>
                 </div>
 
                 <div class="examples">
-                    <h3>📚 Turing Machine Examples</h3>
+                    <h3>📚 Turing Machine Examples <span style="color: #ff6b6b; font-size: 0.8em;">(Basic Patterns)</span></h3>
                     <div class="example-item" onclick="loadExample('tm', 'anbncn')">
                         ✓ TM for {aⁿbⁿcⁿ | n ≥ 1}
                     </div>
@@ -777,6 +814,16 @@ S → aSb | ab"></textarea>
                     </div>
                     <div class="example-item" onclick="loadExample('tm', 'anbn')">
                         ✓ TM for {aⁿbⁿ | n ≥ 0}
+                    </div>
+                    <div style="padding: 10px; margin-top: 10px; background: #fff3cd; border-left: 4px solid #ffc107; border-radius: 4px; font-size: 0.85em;">
+                        <strong>🚧 Under Development:</strong>
+                        <ul style="margin: 5px 0 0 20px; line-height: 1.6;">
+                            <li>Multi-tape Turing Machines</li>
+                            <li>Universal Turing Machine simulation</li>
+                            <li>Complex arithmetic operations (multiplication, division)</li>
+                            <li>Step-by-step tape visualization</li>
+                            <li>Decidability problem solving</li>
+                        </ul>
                     </div>
                 </div>
             </div>
@@ -813,7 +860,7 @@ S → aSb | ab"></textarea>
                 </div>
 
                 <div class="examples">
-                    <h3>📚 Theory Examples</h3>
+                    <h3>📚 Theory Examples <span style="color: #ff6b6b; font-size: 0.8em;">(Conceptual)</span></h3>
                     <div class="example-item" onclick="loadExample('theory', 'pumping_regular')">
                         ✓ Pumping Lemma for Regular Languages
                     </div>
@@ -828,6 +875,16 @@ S → aSb | ab"></textarea>
                     </div>
                     <div class="example-item" onclick="loadExample('theory', 'lba')">
                         ✓ Linear Bounded Automata
+                    </div>
+                    <div style="padding: 10px; margin-top: 10px; background: #fff3cd; border-left: 4px solid #ffc107; border-radius: 4px; font-size: 0.85em;">
+                        <strong>🚧 Under Development:</strong>
+                        <ul style="margin: 5px 0 0 20px; line-height: 1.6;">
+                            <li>Rice's Theorem applications</li>
+                            <li>Chomsky Hierarchy detailed proofs</li>
+                            <li>Myhill-Nerode Theorem automation</li>
+                            <li>Reduction techniques (many-one, Turing)</li>
+                            <li>Complexity class analysis (P, NP, NP-Complete)</li>
+                        </ul>
                     </div>
                 </div>
             </div>
