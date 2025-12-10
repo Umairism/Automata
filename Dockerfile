@@ -20,8 +20,8 @@ COPY . .
 # Create static directory for generated diagrams
 RUN mkdir -p static
 
-# Expose port
-EXPOSE 5000
+# Expose the port dynamically (Railway will set it)
+EXPOSE $PORT
 
-# Run the application
-CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:5000", "app:app"]
+# Run the application using Railway's assigned port
+CMD ["sh", "-c", "gunicorn app:app -w 4 -b 0.0.0.0:${PORT}"]
